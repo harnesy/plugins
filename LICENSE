@@ -1,0 +1,19 @@
+Licences in this repository
+
+1. Plugin code (plugins/<publisher>/<name>/<version>/: plugin.yaml, lua/**, web/** and
+   every other file of the version folder) is licensed under the licence in that
+   version's LICENSE file: MIT, Apache-2.0 or CC0-1.0.
+   - Plugins under plugins/harnsy/: © 2026 Pavel Buchnev (harnsy).
+   - Every other plugin: © its publisher (publishers/<id>.json).
+
+2. The card of a plugin (the listing block of plugin.yaml and the files under
+   listing/: icon, docs pages, screenshots) is part of the version folder and is
+   licensed under the same licence as its code.
+
+3. The checking tools (tools/) are licensed under the MIT License,
+   LICENSES/MIT.txt.
+
+Not covered by any licence above: the names and logos "harnsy" and
+"plugins.harnsy.dev".
+
+Contributor terms: TERMS.md.

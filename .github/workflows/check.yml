@@ -1,0 +1,51 @@
+# The automatic check of a pull request (step 1 of 4: check → code review → card → a person decides).
+# It builds the repository check from the BASE branch, installs the harnsy release pinned in the BASE branch
+# (tools/harnsy-version), and only reads the pull request's files: harnsy plugin check compiles the Lua and reads the
+# page scripts, it never runs a plugin. No secrets, read-only token.
+name: check
+on:
+  pull_request:
+    branches: [main]
+    # edited: the confirmations in the description are part of the check.
+    types: [opened, synchronize, reopened, edited]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Base branch (the check's code and the pinned harnsy)
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+          persist-credentials: false
+      - name: Pull request (files to read)
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.22'
+          cache: false
+      - name: Pinned harnsy (verified against the release's signed SHA256SUMS by the installer)
+        run: |
+          curl -fsSL https://harnsy.dev/install.sh | HARNSY_VERSION="$(cat base/tools/harnsy-version)" sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Check
+        env:
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          AUTHOR_ID: ${{ github.event.pull_request.user.id }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          cd base/tools/check
+          go build -buildvcs=false -o "$RUNNER_TEMP/check" .
+          cd "$GITHUB_WORKSPACE"
+          printf '%s' "$BODY" > "$RUNNER_TEMP/body.md"
+          # The repository rules (layout, publisher, card, screenshots, confirmations), then for each new version
+          # folder: harnsy plugin check --json, harnsy plugin pack --publisher, the card against the check's
+          # needs/entries, and whether plugins.harnsy.dev recorded a proof for that manifest and this author.
+          "$RUNNER_TEMP/check" --dir pr --base base --author "$AUTHOR" --author-id "$AUTHOR_ID" --body "$RUNNER_TEMP/body.md" --harnsy harnsy
