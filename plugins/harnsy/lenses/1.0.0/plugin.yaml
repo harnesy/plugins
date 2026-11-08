@@ -1,0 +1,162 @@
+# Lenses: a recording of the project's items read through several lenses.
+# A lens is a name and an instruction. An analysis transcribes the recording
+# (harnsy.transcribe.*), then gives a role of the project one item that
+# links the transcript and lists the chosen lenses; the role's agent writes
+# lenses.md and submits the item. The transcript's text never goes into it.
+name: lenses
+version: 1.0.0
+title: Lenses
+needs: [items.read, items.write, transcribe, sql]
+settings:
+  - {key: role, type: string, default: "", label: "Role that gets the analyses (empty: the project's lead)"}
+entries:
+  - {name: lenses, kind: page, title: page.title, icon: layers, script: web/page.js, source: lua/lenses.lua, calls: [lens_list, lens_save, lens_delete, node_ready, recordings, analyze, analyses], place: project}
+  - {name: loop, kind: process, source: lua/lenses.lua}
+listing:
+  summary: "Lenses for a recording: a meeting or a call read by the instructions you write, by an agent of the project."
+  description: |
+    A lens is a name and an instruction, like Meeting summary or Decisions and tasks. Pick a sound or video
+    attachment of an item, tick the lenses, press Analyze. The plugin has harnsy transcribe it, which sends the
+    recording to the node's dictation connection, then gives one item to a role of the project (its lead when
+    the setting is empty) with a link to the transcript and the lenses. The role's agent writes lenses.md and submits it.
+  docs:
+    - {slug: how-it-works, title: How it works and what it asks for, file: listing/docs/how-it-works.md}
+strings:
+  en:
+    page.title: Lenses
+    lenses: Lenses
+    lens.add: + Lens
+    lens.edit: Edit lens
+    lens.new: New lens
+    lens.name: Name
+    lens.instruction: Instruction
+    lens.delete: Delete
+    lens.delete_ask: Delete the lens «{name}»?
+    lens.empty: No lenses yet. Add the first one.
+    save: Save
+    cancel: Cancel
+    analyze.title: Analyze a recording
+    analyze.go: Analyze
+    analyze.pick: Recording
+    analyze.lenses: Lenses
+    analyze.none: No sound or video in the project's items yet.
+    analyze.ready: Transcribed
+    analyze.need_ffmpeg: Needs ffmpeg
+    analyze.ffmpeg_help: harnsy cuts long recordings and video with ffmpeg. Install it on the machine of harnsy; no need to restart harnsy. Short recordings work without it.
+    analyze.cannot: Not available
+    analyze.started: Analysis started
+    analyses: Analyses
+    analyses.empty: No analyses yet.
+    col.recording: Recording
+    col.lenses: Lenses
+    col.state: State
+    col.item: Item
+    state.queued: Queued
+    state.transcribing: "Transcribing {done}/{total}"
+    state.agent: With the agent
+    state.done: Done
+    state.failed: Failed
+    open: Open
+    err.name: "A lens needs a name of at most 60 characters."
+    err.instruction: "An instruction of 1 to 2000 characters."
+    err.pick: Pick a recording and at least one lens.
+    err.long: "Too many lens words for one item: at most 4000 characters in all."
+    err.gone: The recording is gone. Reload the page.
+    failed: "Not done: {why}"
+    ready.no_connection: No connection
+    ready.no_connection_help: harnsy has no dictation connection to transcribe with. Choose one under Settings › Look and input › Dictation.
+    ready.budget: Minute limit
+    ready.budget_help: This month's limit of transcription minutes is reached. Raise it under Settings › Look and input › Dictation, or wait for the 1st.
+    ready.off: Not available
+  ru:
+    page.title: Линзы
+    lenses: Линзы
+    lens.add: ＋ Линза
+    lens.edit: Изменить линзу
+    lens.new: Новая линза
+    lens.name: Название
+    lens.instruction: Инструкция
+    lens.delete: Удалить
+    lens.delete_ask: Удалить линзу «{name}»?
+    lens.empty: Линз пока нет. Добавьте первую.
+    save: Сохранить
+    cancel: Отмена
+    analyze.title: Разобрать запись
+    analyze.go: Разобрать
+    analyze.pick: Запись
+    analyze.lenses: Линзы
+    analyze.none: В пунктах проекта пока нет звука или видео.
+    analyze.ready: Расшифровано
+    analyze.need_ffmpeg: Нужен ffmpeg
+    analyze.ffmpeg_help: Длинные записи и видео harnsy режет программой ffmpeg. Установите её на машину harnsy; перезапускать harnsy не нужно. Короткие записи работают и без неё.
+    analyze.cannot: Недоступно
+    analyze.started: Разбор начат
+    analyses: Разборы
+    analyses.empty: Разборов пока нет.
+    col.recording: Запись
+    col.lenses: Линзы
+    col.state: Состояние
+    col.item: Пункт
+    state.queued: В очереди
+    state.transcribing: "Расшифровка {done}/{total}"
+    state.agent: У агента
+    state.done: Готово
+    state.failed: Сбой
+    open: Открыть
+    err.name: "У линзы должно быть название, не длиннее 60 знаков."
+    err.instruction: "Инструкция — от 1 до 2000 знаков."
+    err.pick: Выберите запись и хотя бы одну линзу.
+    err.long: "Слишком много текста линз для одного пункта: не больше 4000 знаков."
+    err.gone: Записи больше нет. Обновите страницу.
+    failed: "Не сделано: {why}"
+    ready.no_connection: Нет подключения
+    ready.no_connection_help: У harnsy нет подключения диктовки для расшифровки. Выберите его в Настройках › Вид и ввод › Диктовка.
+    ready.budget: Лимит минут
+    ready.budget_help: Лимит минут расшифровки на этот месяц исчерпан. Поднимите его в Настройках › Вид и ввод › Диктовка или дождитесь 1-го числа.
+    ready.off: Недоступно
+  es:
+    page.title: Lentes
+    lenses: Lentes
+    lens.add: + Lente
+    lens.edit: Editar lente
+    lens.new: Lente nueva
+    lens.name: Nombre
+    lens.instruction: Instrucción
+    lens.delete: Eliminar
+    lens.delete_ask: ¿Eliminar la lente «{name}»?
+    lens.empty: Aún no hay lentes. Añada la primera.
+    save: Guardar
+    cancel: Cancelar
+    analyze.title: Analizar una grabación
+    analyze.go: Analizar
+    analyze.pick: Grabación
+    analyze.lenses: Lentes
+    analyze.none: Aún no hay sonido ni vídeo en los elementos del proyecto.
+    analyze.ready: Transcrito
+    analyze.need_ffmpeg: Requiere ffmpeg
+    analyze.ffmpeg_help: harnsy corta grabaciones largas y vídeo con ffmpeg. Instálelo en la máquina de harnsy; no hace falta reiniciar harnsy. Las grabaciones cortas funcionan sin él.
+    analyze.cannot: No disponible
+    analyze.started: Análisis iniciado
+    analyses: Análisis
+    analyses.empty: Aún no hay análisis.
+    col.recording: Grabación
+    col.lenses: Lentes
+    col.state: Estado
+    col.item: Elemento
+    state.queued: En cola
+    state.transcribing: "Transcribiendo {done}/{total}"
+    state.agent: Con el agente
+    state.done: Listo
+    state.failed: Error
+    open: Abrir
+    err.name: "Una lente necesita un nombre de 60 caracteres como máximo."
+    err.instruction: "Una instrucción de 1 a 2000 caracteres."
+    err.pick: Elija una grabación y al menos una lente.
+    err.long: "Demasiado texto de lentes para un elemento: 4000 caracteres como máximo."
+    err.gone: La grabación ya no existe. Recargue la página.
+    failed: "No hecho: {why}"
+    ready.no_connection: Sin conexión
+    ready.no_connection_help: harnsy no tiene una conexión de dictado para transcribir. Elija una en Ajustes › Aspecto y entrada › Dictado.
+    ready.budget: Límite de minutos
+    ready.budget_help: Se alcanzó el límite de minutos de transcripción de este mes. Súbalo en Ajustes › Aspecto y entrada › Dictado o espere al día 1.
+    ready.off: No disponible
