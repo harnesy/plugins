@@ -205,7 +205,7 @@ func runHarnsyCheck(p *problems, rel, abs, pub, name, ver, harnsy string) (check
 		if err != nil {
 			msg = err.Error()
 		}
-		p.add(rel, "`harnsy plugin check` gave no answer (%s) — is the pinned harnsy installed?", msg)
+		p.add(rel, "`harnsy plugin check` gave no answer (%s) — is the harnsy of tools/harnsy-version installed?", msg)
 		return res, false
 	}
 	if !res.OK {

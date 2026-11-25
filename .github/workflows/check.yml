@@ -1,6 +1,7 @@
 # The automatic check of a pull request (step 1 of 4: check → code review → card → a person decides).
-# It builds the repository check from the BASE branch, installs the harnsy release pinned in the BASE branch
-# (tools/harnsy-version), and only reads the pull request's files: harnsy plugin check compiles the Lua and reads the
+# It builds the repository check from the BASE branch, installs the harnsy release the BASE branch names in
+# tools/harnsy-version (a tag, or `latest`: the newest published release of harnesy/app, pre-releases included,
+# so the check never waits for a tag that is not out yet), and only reads the pull request's files: harnsy plugin check compiles the Lua and reads the
 # page scripts, it never runs a plugin. No secrets, read-only token.
 name: check
 on:
@@ -15,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Base branch (the check's code and the pinned harnsy)
+      - name: Base branch (the check's code and the harnsy version)
         uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.base.sha }}
@@ -31,9 +32,18 @@ jobs:
         with:
           go-version: '1.22'
           cache: false
-      - name: Pinned harnsy (verified against the release's signed SHA256SUMS by the installer)
+      - name: harnsy (verified against the release's signed SHA256SUMS by the installer)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          curl -fsSL https://harnsy.dev/install.sh | HARNSY_VERSION="$(cat base/tools/harnsy-version)" sh
+          v="$(tr -d '[:space:]' < base/tools/harnsy-version)"
+          if [ "$v" = latest ]; then
+            # The newest by publication (the API's own order is not); a draft is never published. The installer's own «latest» skips pre-releases.
+            v="$(gh api 'repos/harnesy/app/releases?per_page=30' --jq '[.[] | select(.draft | not)] | max_by(.published_at) | .tag_name')"
+          fi
+          case "$v" in v[0-9]*) ;; *) echo "::error::no harnsy release to install (tools/harnsy-version gave '$v')"; exit 1 ;; esac
+          echo "harnsy $v"
+          curl -fsSL https://harnsy.dev/install.sh | HARNSY_VERSION="$v" sh
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Check
         env:

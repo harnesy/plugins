@@ -6,7 +6,8 @@
 //	                                                                  plus the pull-request rules (and the template's boxes)
 //
 // Each problem is one line «path: what is wrong — how to fix»; in GitHub Actions also an ::error annotation. Exit 1 on any.
-// The harnsy release that runs `plugin check/pack` is the one pinned in the BASE branch (tools/harnsy-version).
+// The harnsy release that runs `plugin check/pack` is the one the BASE branch names in tools/harnsy-version
+// (a tag, or `latest`: the newest published release, pre-releases included).
 package main
 
 import (
@@ -72,7 +73,7 @@ func main() {
 	author := flag.String("author", "", "the pull request's GitHub login (with --base)")
 	authorID := flag.Int64("author-id", 0, "the pull request author's numeric GitHub id (with --base)")
 	body := flag.String("body", "", "a file with the pull request's description: the template's boxes and terms version (with --base)")
-	harnsy := flag.String("harnsy", "", "the harnsy binary (pinned in tools/harnsy-version) for `plugin check` and `plugin pack`")
+	harnsy := flag.String("harnsy", "", "the harnsy binary (the release of tools/harnsy-version) for `plugin check` and `plugin pack`")
 	proofs := flag.String("proofs-url", "", "the catalog's proof endpoint (GET <url>/<manifest_sha256>?github=<login>); empty: not checked yet")
 	flag.Parse()
 	opt := options{harnsy: *harnsy, proofsURL: strings.TrimRight(*proofs, "/")}
