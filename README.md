@@ -15,7 +15,7 @@ plugin runs with the rights you give it.
 1. The author prepares the version on their own harnsy node («Prepare for catalog»; it needs a valid harnsy Max
    licence) and sends the version folder here by a pull request (see [CONTRIBUTING.md](CONTRIBUTING.md)).
 2. **Automatic check.** On every push the check reads the pull request's files and runs `harnsy plugin check` on the
-   version with a pinned harnsy. It never runs the plugin.
+   version with the harnsy release of `tools/harnsy-version`. It never runs the plugin.
 3. **Code review.** harnsy's AI security reviewer (an AI agent) reads the Lua and page scripts of exactly this version: does the code do
    only what `plugin.yaml` declares, and does project data leave only to the declared hosts?
 4. **Card.** The catalog curator (an AI agent) checks that the card says exactly what the plugin does and asks for, in plain words.
