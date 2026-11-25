@@ -4,7 +4,10 @@
 // ffmpeg is harnsy's answer (ok, code of the recordings): drawn, never
 // decided here. Whether harnsy transcribes at all now (no connection, the
 // month's limit) is transcribe.ready(), asked once when the page opens: one
-// notice, its why behind ⓘ.
+// notice, its why behind ⓘ. While an analysis is transcribing or with the
+// agent the page reads the analyses again on a timer (5 s, 30 s), so the
+// pieces done and «Done» show without a reload; harnsy's refresh comes only
+// after a hook, a check, an action or a webhook, never after a job's letter.
 
 const STYLE = `
   :host { display: block; }
@@ -24,6 +27,11 @@ const STYLE = `
   .notice { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .notice[hidden] { display: none; }
 `
+
+let timer = 0
+
+// An empty Lua table comes as {}: a list is an array or nothing.
+const list = (v) => (Array.isArray(v) ? v : [])
 
 const el = (tag, cls, text) => {
   const e = document.createElement(tag)
@@ -102,7 +110,7 @@ export async function mount(root, harnsy) {
   }
 
   const loadLenses = async () => {
-    lenses = (await harnsy.call('lens_list', [harnsy.lang])) || []
+    lenses = list(await harnsy.call('lens_list', [harnsy.lang]))
     drawLenses()
   }
 
@@ -113,6 +121,10 @@ export async function mount(root, harnsy) {
       if (r && r.error) {
         name.error = r.error === 'name' ? t('err.name') : ''
         instruction.error = r.error === 'instruction' ? t('err.instruction') : ''
+        if (r.error === 'lens_gone') {
+          dialog.error = t('err.lens_gone')
+          await loadLenses()
+        }
         return
       }
       dialog.open = false
@@ -190,7 +202,7 @@ export async function mount(root, harnsy) {
     }
   }
 
-  const loadRecordings = async () => drawRecordings((await harnsy.call('recordings')) || [])
+  const loadRecordings = async () => drawRecordings(list(await harnsy.call('recordings')))
 
   $('go').addEventListener('press', async () => {
     const ids = $('chips').value || []
@@ -229,7 +241,11 @@ export async function mount(root, harnsy) {
   }
 
   const loadAnalyses = async () => {
-    const rows = (await harnsy.call('analyses')) || []
+    const rows = list(await harnsy.call('analyses'))
+    clearTimeout(timer)
+    const every = rows.some((a) => a.state === 'transcribing' || a.state === 'queued') ? 5000
+      : rows.some((a) => a.state === 'agent') ? 30000 : 0
+    if (every) timer = setTimeout(() => { loadAnalyses().catch(() => {}) }, every)
     const box = $('rows')
     box.replaceChildren()
     if (rows.length === 0) box.append(el('div', 'muted', t('analyses.empty')))
@@ -286,4 +302,4 @@ export async function mount(root, harnsy) {
   await loadAll()
 }
 
-export function unmount() {}
+export function unmount() { clearTimeout(timer) }

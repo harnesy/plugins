@@ -5,15 +5,16 @@ plugin starts every project with three you may change or delete: «Meeting
 summary», «Decisions and tasks», «Risks and open questions».
 
 1. Attach a sound or video file to an item of the project (a call, a meeting).
-2. Open the plugin's page, pick the recording under «Analyze a recording»,
+2. Open the plugin's page, pick the recording under «Analyze a recording»
+   (the list shows the project's 20 latest sound and video attachments),
    tick the lenses and press **Analyze**.
 3. harnsy transcribes the recording in the background. The page shows
-   «Transcribing 3/8» while it works. The transcript is attached to the
+   «Transcribing 3/8» while it works and updates it by itself while open. The transcript is attached to the
    recording's item as `<name>.transcript.md`.
 4. The plugin then creates one item for a role of the project: the setting
    `role`; empty, the default, is the project's lead, whatever its role is
    called. Its title is the task («Lenses: write lenses.md and submit —
-   <recording>»); the item links the recording and
+   recording of #12»); the item links the recording and
    the transcript and lists the lenses with their instructions; it never
    copies the transcript's text.
 5. The role's agent reads the transcript, writes `lenses.md` with a section

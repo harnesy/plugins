@@ -16,7 +16,7 @@ listing:
   summary: "Lenses for a recording: a meeting or a call read by the instructions you write, by an agent of the project."
   description: |
     A lens is a name and an instruction, like Meeting summary or Decisions and tasks. Pick a sound or video
-    attachment of an item, tick the lenses, press Analyze. The plugin has harnsy transcribe it, which sends the
+    attachment of an item (the project's 20 latest are listed), tick the lenses, press Analyze. The plugin has harnsy transcribe it, which sends the
     recording to the node's dictation connection, then gives one item to a role of the project (its lead when
     the setting is empty) with a link to the transcript and the lenses. The role's agent writes lenses.md and submits it.
   docs:
@@ -62,6 +62,7 @@ strings:
     err.pick: Pick a recording and at least one lens.
     err.long: "Too many lens words for one item: at most 4000 characters in all."
     err.gone: The recording is gone. Reload the page.
+    err.lens_gone: This lens was deleted meanwhile. The list is reloaded.
     failed: "Not done: {why}"
     ready.no_connection: No connection
     ready.no_connection_help: harnsy has no dictation connection to transcribe with. Choose one under Settings › Look and input › Dictation.
@@ -108,6 +109,7 @@ strings:
     err.pick: Выберите запись и хотя бы одну линзу.
     err.long: "Слишком много текста линз для одного пункта: не больше 4000 знаков."
     err.gone: Записи больше нет. Обновите страницу.
+    err.lens_gone: Эту линзу тем временем удалили. Список обновлён.
     failed: "Не сделано: {why}"
     ready.no_connection: Нет подключения
     ready.no_connection_help: У harnsy нет подключения диктовки для расшифровки. Выберите его в Настройках › Вид и ввод › Диктовка.
@@ -154,6 +156,7 @@ strings:
     err.pick: Elija una grabación y al menos una lente.
     err.long: "Demasiado texto de lentes para un elemento: 4000 caracteres como máximo."
     err.gone: La grabación ya no existe. Recargue la página.
+    err.lens_gone: Esta lente se eliminó mientras tanto. La lista se ha recargado.
     failed: "No hecho: {why}"
     ready.no_connection: Sin conexión
     ready.no_connection_help: harnsy no tiene una conexión de dictado para transcribir. Elija una en Ajustes › Aspecto y entrada › Dictado.
